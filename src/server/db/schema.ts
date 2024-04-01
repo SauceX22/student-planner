@@ -9,7 +9,6 @@ import {
   smallint,
   text,
   timestamp,
-  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
@@ -25,7 +24,7 @@ export const createTable = pgTableCreator((name) => `sp_${name}`);
 export const events = createTable(
   "event",
   {
-    id: uuid("id").primaryKey(),
+    id: varchar("id", { length: 255 }).primaryKey(),
     title: text("title").notNull(),
     description: text("description"),
     due: timestamp("due").notNull(),
@@ -34,7 +33,7 @@ export const events = createTable(
     color: varchar("color", { length: 255 }).notNull().default("#EF4444"),
     labels: json("labels").$type<string[]>().notNull().default([]),
     order: smallint("order").notNull().default(0),
-    createdById: uuid("created_by_id")
+    createdById: varchar("created_by_id", { length: 255 })
       .notNull()
       .references(() => users.id),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
@@ -57,7 +56,7 @@ export const eventsRelations = relations(events, ({ one }) => ({
 }));
 
 export const users = createTable("user", {
-  id: varchar("id", { length: 255 }).notNull().primaryKey(),
+  id: varchar("id", { length: 255 }).primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull(),
   emailVerified: timestamp("emailVerified", {
