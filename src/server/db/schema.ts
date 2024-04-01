@@ -1,10 +1,12 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   index,
   integer,
+  json,
   pgTableCreator,
   primaryKey,
-  serial,
+  smallint,
   text,
   timestamp,
   varchar,
@@ -17,30 +19,45 @@ import { type AdapterAccount } from "next-auth/adapters";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `student-planner_${name}`);
+export const createTable = pgTableCreator((name) => `sp_${name}`);
 
-export const posts = createTable(
-  "post",
+export const events = createTable(
+  "event",
   {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    createdById: varchar("createdById", { length: 255 })
+    id: varchar("id", { length: 255 }).primaryKey(),
+    title: text("title").notNull(),
+    description: text("description"),
+    due: timestamp("due").notNull(),
+    isRecurring: boolean("is_recurring").notNull().default(false),
+    isCompleted: boolean("is_completed").notNull().default(false),
+    color: varchar("color", { length: 255 }).notNull().default("#EF4444"),
+    labels: json("labels").$type<string[]>().notNull().default([]),
+    order: smallint("order").notNull().default(0),
+    createdById: varchar("created_by_id", { length: 255 })
       .notNull()
       .references(() => users.id),
-    createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
+      .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updatedAt"),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" })
+      .defaultNow()
+      .notNull(),
   },
-  (example) => ({
-    createdByIdIdx: index("createdById_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
-  })
+  (event) => ({
+    createdByIdx: index("event_createdById_idx").on(event.createdById),
+  }),
 );
 
+export const eventsRelations = relations(events, ({ one }) => ({
+  createdBy: one(users, {
+    fields: [events.createdById],
+    references: [users.id],
+  }),
+}));
+
 export const users = createTable("user", {
-  id: varchar("id", { length: 255 }).notNull().primaryKey(),
-  name: varchar("name", { length: 255 }),
+  id: varchar("id", { length: 255 }).primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull(),
   emailVerified: timestamp("emailVerified", {
     mode: "date",
@@ -76,7 +93,7 @@ export const accounts = createTable(
       columns: [account.provider, account.providerAccountId],
     }),
     userIdIdx: index("account_userId_idx").on(account.userId),
-  })
+  }),
 );
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -96,7 +113,7 @@ export const sessions = createTable(
   },
   (session) => ({
     userIdIdx: index("session_userId_idx").on(session.userId),
-  })
+  }),
 );
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -112,5 +129,5 @@ export const verificationTokens = createTable(
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  })
+  }),
 );
