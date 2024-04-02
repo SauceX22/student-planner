@@ -1,15 +1,14 @@
-import { create } from "zustand";
-import { format, parse, startOfToday } from "date-fns";
-import { events } from "@db/schema";
 import type {
-  MonthEventsState,
-  ManipulatingEventState,
-  SelectedDayState,
-  DisplayedMonthState,
-  SelectedEventState,
   CalendarDataState,
-} from "@/lib/store";
+  DisplayedMonthState,
+  ManipulatingEventState,
+  MonthEventsState,
+  SelectedDayState,
+  SelectedEventState,
+} from "@/lib/store/types";
 import { type EventType } from "@db/types";
+import { format, parse, startOfToday } from "date-fns";
+import { create } from "zustand";
 
 export const useMonthEvents = create<MonthEventsState>((set) => ({
   monthEvents: [],
