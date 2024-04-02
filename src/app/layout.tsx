@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/client";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "next-themes";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,8 +32,15 @@ export default function RootLayout({
         )}
       >
         <TRPCReactProvider>
-          {children}
-          <Toaster richColors duration={2700} />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <Toaster richColors duration={2700} />
+          </ThemeProvider>
         </TRPCReactProvider>
       </body>
     </html>
