@@ -12,6 +12,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
+import { randomUUID } from "node:crypto";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -24,7 +25,7 @@ export const createTable = pgTableCreator((name) => `sp_${name}`);
 export const events = createTable(
   "event",
   {
-    id: varchar("id", { length: 255 }).primaryKey(),
+    id: varchar("id", { length: 255 }).primaryKey().default(randomUUID()),
     title: text("title").notNull(),
     description: text("description"),
     due: timestamp("due").notNull(),
@@ -56,7 +57,7 @@ export const eventsRelations = relations(events, ({ one }) => ({
 }));
 
 export const users = createTable("user", {
-  id: varchar("id", { length: 255 }).primaryKey(),
+  id: varchar("id", { length: 255 }).primaryKey().default(randomUUID()),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull(),
   emailVerified: timestamp("emailVerified", {
