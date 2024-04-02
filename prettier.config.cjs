@@ -1,5 +1,5 @@
 /** @type {import('prettier').Config & import('prettier-plugin-tailwindcss').options} */
-module.exports = {
+export default {
   endOfLine: "lf",
   printWidth: 80,
   semi: true,
@@ -43,8 +43,8 @@ module.exports = {
   tailwindConfig: "./tailwind.config.ts",
   tailwindFunctions: ["clsx", "cn", "tw"],
   plugins: [
-    require("@ianvs/prettier-plugin-sort-imports"),
-    require("prettier-plugin-tailwindcss"),
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss",
   ],
   pluginSearchDirs: false,
 };
