@@ -5,7 +5,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { events } from "@/server/db/schema";
+import { events } from "@db/schema";
 
 export const eventRouter = createTRPCRouter({
   hello: publicProcedure

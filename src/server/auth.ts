@@ -9,7 +9,7 @@ import GOOGLEProvider from "next-auth/providers/GOOGLE";
 
 import { env } from "@/env";
 import { db } from "@/server/db";
-import { createTable } from "@/server/db/schema";
+import { createTable, users } from "@db/schema";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -19,17 +19,8 @@ import { createTable } from "@/server/db/schema";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: {
-      id: string;
-      // ...other properties
-      // role: UserRole;
-    } & DefaultSession["user"];
+    user: typeof users.$inferSelect;
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
 /**
