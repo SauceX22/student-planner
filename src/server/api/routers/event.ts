@@ -1,18 +1,84 @@
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { events } from "@db/schema";
+import { insertEventSchema, updateEventSchema } from "@db/validation/event";
+import { eq } from "drizzle-orm";
 
 export const eventRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
+  add: protectedProcedure
+    .input(insertEventSchema)
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.db
+        .insert(events)
+        .values({
+          ...input,
+          createdById: ctx.session.user.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
+    }),
+  update: protectedProcedure
+    .input(updateEventSchema)
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.db
+        .update(events)
+        .set({
+          ...input,
+          updatedAt: new Date(),
+        })
+        .where(eq(events.id, input.id))
+        .returning();
+    }),
+  listMonthEvents: protectedProcedure
+    .input(
+      z.object({
+        firstDispDay: z.date(),
+        lastDispDay: z.date(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.query.events.findMany({
+        where(fields, { and, gte, lte, eq }) {
+          return and(
+            gte(fields.due, input.firstDispDay),
+            lte(fields.due, input.lastDispDay),
+            eq(fields.createdById, ctx.session.user.id),
+          );
+        },
+        orderBy(fields, { asc, desc, sql }) {
+          return asc(fields.due);
+        },
+      });
+    }),
+  remove: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.db
+        .delete(events)
+        .where(eq(events.id, input.id))
+        .returning();
+    }),
+  reschedule: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+        due: z.date().optional(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.db
+        .update(events)
+        .set({
+          due: input.due,
+          updatedAt: new Date(),
+        })
+        .where(eq(events.id, input.id))
+        .returning();
     }),
 });

@@ -8,12 +8,12 @@ import type {
   DisplayedMonthState,
   SelectedEventState,
   CalendarDataState,
-} from "@/lib/validation/types";
-import { type Event } from "@db/types";
+} from "@/lib/store";
+import { type EventType } from "@db/types";
 
 export const useMonthEvents = create<MonthEventsState>((set) => ({
   monthEvents: [],
-  setMonthEvents: (newMonthEvents: Event[]) =>
+  setMonthEvents: (newMonthEvents: EventType[]) =>
     set((state) => ({ monthEvents: [...newMonthEvents] })),
 }));
 
@@ -55,7 +55,7 @@ export const useDisplayedMonth = create<DisplayedMonthState>((set) => ({
 
 export const useSelectedEvent = create<SelectedEventState>((set) => ({
   selectedEvent: null,
-  setSelectedEvent: (newSelectedEvent: Event | null) =>
+  setSelectedEvent: (newSelectedEvent: EventType | null) =>
     set((state) => ({ selectedEvent: newSelectedEvent })),
 }));
 

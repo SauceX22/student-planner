@@ -1,8 +1,8 @@
-import { type Event } from "@db/types";
+import { type EventType } from "@db/types";
 
 export type MonthEventsState = {
-  monthEvents: Event[];
-  setMonthEvents: (newMonthEvents: Event[]) => void;
+  monthEvents: EventType[];
+  setMonthEvents: (newMonthEvents: EventType[]) => void;
 };
 
 export type ManipulatingEventState = {
@@ -25,8 +25,8 @@ export type DisplayedMonthState = {
 };
 
 export type SelectedEventState = {
-  selectedEvent: Event | null;
-  setSelectedEvent: (newSelectedEvent: Event | null) => void;
+  selectedEvent: EventType | null;
+  setSelectedEvent: (newSelectedEvent: EventType | null) => void;
 };
 
 export type CalendarDataState = {
