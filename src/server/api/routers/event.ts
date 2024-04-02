@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { events } from "@db/schema";
 import { insertEventSchema, updateEventSchema } from "@db/validation/event";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export const eventRouter = createTRPCRouter({
   add: protectedProcedure
@@ -28,9 +28,24 @@ export const eventRouter = createTRPCRouter({
           ...input,
           updatedAt: new Date(),
         })
-        .where(eq(events.id, input.id))
+        .where(
+          and(
+            eq(events.createdById, ctx.session.user.id),
+            eq(events.id, input.id),
+          ),
+        )
         .returning();
     }),
+  list: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.query.events.findMany({
+      where(fields, { eq, gte, lte }) {
+        return eq(fields.createdById, ctx.session.user.id);
+      },
+      orderBy(fields, { asc, desc, sql }) {
+        return desc(fields.order);
+      },
+    });
+  }),
   listMonthEvents: protectedProcedure
     .input(
       z.object({
