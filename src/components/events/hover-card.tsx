@@ -19,35 +19,44 @@ type Props = {
   // event: Pick<EventType, "title" | "description" | "color">;
 } & React.ComponentProps<typeof Card>;
 
-const DEBOUNCE_TIME = 400;
+const DEBOUNCE_TIME = 600;
 
 // always retracted, on click expand down
 const HoverCard = ({ className, ...props }: Props) => {
   const [expanded, setExpanded] = useState(false);
+  const [lastExpandedByHover, setLastExpandedByHover] = useState(false);
 
   const handleHoverStart = debounce(() => {
     setExpanded(true);
+    setLastExpandedByHover(true);
   }, DEBOUNCE_TIME); // Adjust debounce delay as needed
+
+  const handleHoverEnd = () => {
+    if (expanded && lastExpandedByHover) {
+      setExpanded(false);
+    }
+  };
+
+  const handleTap = () => {
+    if (expanded) {
+      setExpanded(false);
+    } else {
+      handleHoverStart.flush() ?? setExpanded(true);
+      setLastExpandedByHover(false);
+    }
+  };
 
   return (
     <MotionCard
       className={cn(
         className,
         "w-full p-4 select-none overflow-hidden relative rounded-2xl transition-colors",
-        { "bg-blue-800": expanded },
+        { "bg-blue-900": expanded },
       )}
       style={{ height: expanded ? "auto" : "fit-content" }}
-      onTap={() => {
-        if (expanded) {
-          setExpanded(false);
-        } else {
-          handleHoverStart.flush() ?? setExpanded(true);
-        }
-      }}
+      onTap={handleTap}
       onHoverStart={() => !expanded && handleHoverStart()}
-      onHoverEnd={() =>
-        !expanded ? handleHoverStart.cancel() : setExpanded(false)
-      }
+      onHoverEnd={handleHoverEnd}
       whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.98 }}
       transition={{
