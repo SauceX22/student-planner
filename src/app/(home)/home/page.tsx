@@ -1,7 +1,5 @@
 "use client";
 
-import EventList from "@/components/events/event-list";
-import HoverCard from "@/components/events/hover-card";
 import HoverCardList from "@/components/events/hover-card-list";
 
 type Props = {};
