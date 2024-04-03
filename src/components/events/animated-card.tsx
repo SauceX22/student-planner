@@ -1,19 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { AnimatePresence } from "framer-motion";
+
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
   MotionCard,
   MotionCardContent,
   MotionCardHeader,
-} from "@/components/ui/card";
-import type { EventType } from "@db/types";
-import { debounce } from "lodash";
+} from "@/components/ui/motion-card";
 import { cn } from "@/lib/utils";
-import { AnimatePresence, motion, Variants } from "framer-motion";
 
 type Props = {
   // event: Pick<EventType, "title" | "description" | "color">;
@@ -26,8 +20,8 @@ const AnimatedCard = ({ className, ...props }: Props) => {
     <MotionCard
       className={cn(
         className,
-        "w-full p-4 select-none overflow-hidden relative rounded-2xl transition-colors cursor-pointer",
-        { "bg-blue-900": expanded },
+        "relative w-full cursor-pointer select-none overflow-hidden rounded-2xl p-4 transition-colors",
+        { "bg-blue-900": expanded }
       )}
       style={{ height: expanded ? "auto" : "fit-content" }}
       onTap={() => setExpanded(!expanded)}
@@ -39,14 +33,12 @@ const AnimatedCard = ({ className, ...props }: Props) => {
         stiffness: 700,
         damping: 30,
       }}
-      layout
-    >
+      layout>
       <MotionCardHeader
         layout
         className={cn("p-4", {
           "pb-6": expanded,
-        })}
-      >
+        })}>
         <CardTitle>Card Title</CardTitle>
         <CardDescription>Card Description</CardDescription>
       </MotionCardHeader>

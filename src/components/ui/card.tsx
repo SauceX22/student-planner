@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -11,7 +10,7 @@ const Card = React.forwardRef<
     ref={ref}
     className={cn(
       "rounded-lg border bg-card text-card-foreground shadow-sm",
-      className,
+      className
     )}
     {...props}
   />
@@ -38,7 +37,7 @@ const CardTitle = React.forwardRef<
     ref={ref}
     className={cn(
       "text-2xl font-semibold leading-none tracking-tight",
-      className,
+      className
     )}
     {...props}
   />
@@ -77,24 +76,6 @@ const CardFooter = React.forwardRef<
 ));
 CardFooter.displayName = "CardFooter";
 
-const MotionCard = motion(Card);
-MotionCard.displayName = "MotionCard";
-
-const MotionCardHeader = motion(CardHeader);
-MotionCardHeader.displayName = "MotionCardHeader";
-
-const MotionCardTitle = motion(CardTitle);
-MotionCardTitle.displayName = "MotionCardTitle";
-
-const MotionCardContent = motion(CardContent);
-MotionCardContent.displayName = "MotionCardContent";
-
-const MotionCardDescription = motion(CardDescription);
-MotionCardDescription.displayName = "MotionCardDescription";
-
-const MotionCardFooter = motion(CardFooter);
-MotionCardFooter.displayName = "MotionCardFooter";
-
 export {
   Card,
   CardHeader,
@@ -102,10 +83,4 @@ export {
   CardTitle,
   CardDescription,
   CardContent,
-  MotionCard,
-  MotionCardHeader,
-  MotionCardTitle,
-  MotionCardContent,
-  MotionCardDescription,
-  MotionCardFooter,
 };
