@@ -19,9 +19,8 @@ type Props = {
   // event: Pick<EventType, "title" | "description" | "color">;
 } & React.ComponentProps<typeof Card>;
 
-const DEBOUNCE_TIME = 600;
+const DEBOUNCE_TIME = 650;
 
-// always retracted, on click expand down
 const HoverCard = ({ className, ...props }: Props) => {
   const [expanded, setExpanded] = useState(false);
   const [lastExpandedByHover, setLastExpandedByHover] = useState(false);
@@ -50,7 +49,7 @@ const HoverCard = ({ className, ...props }: Props) => {
     <MotionCard
       className={cn(
         className,
-        "w-full p-4 select-none overflow-hidden relative rounded-2xl transition-colors",
+        "w-full p-4 select-none overflow-hidden relative rounded-2xl transition-colors cursor-pointer",
         { "bg-blue-900": expanded },
       )}
       style={{ height: expanded ? "auto" : "fit-content" }}
@@ -80,10 +79,25 @@ const HoverCard = ({ className, ...props }: Props) => {
         {expanded && (
           <MotionCardContent
             key="expanded-content"
-            initial={{ opacity: 0, filter: "blur(2px)" }}
-            animate={{ opacity: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0.5, filter: "blur(2px)" }}
-            transition={{ duration: 0.2 }}
+            initial={{
+              opacity: 0,
+              y: 10, // move downwards slightly
+              scaleX: 0.98, // scale on x-axis
+              filter: "blur(2px)",
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              scaleX: 1,
+              filter: "blur(0px)",
+            }}
+            exit={{
+              opacity: 0.5,
+              y: 10, // move downwards slightly
+              scaleX: 0.98, // scale on x-axis
+              filter: "blur(2px)",
+            }}
+            transition={{ duration: 0.13 }}
             layout
             className="rounded-xl bg-muted px-6 py-4" // Remove overflow-hidden class
           >
