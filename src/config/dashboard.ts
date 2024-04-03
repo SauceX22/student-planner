@@ -1,3 +1,5 @@
+import { LayoutDashboard, Settings, UsersRound } from "lucide-react";
+
 import { type DashboardConfig } from "@/types";
 
 export const dashboardConfig: DashboardConfig = {
@@ -9,21 +11,21 @@ export const dashboardConfig: DashboardConfig = {
   ],
   sidebarNav: [
     {
-      title: "Home",
-      href: "/home",
-      icon: "home",
+      title: "Dashboard",
+      href: "/dashboard",
+      icon: LayoutDashboard,
     },
 
     {
       title: "Users",
       href: "/users",
-      icon: "user",
+      icon: UsersRound,
       adminOnly: true,
     },
     {
       title: "Settings",
       href: "/settings",
-      icon: "settings",
+      icon: Settings,
     },
   ],
 };
