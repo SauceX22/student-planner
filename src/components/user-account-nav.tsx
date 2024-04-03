@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CircleChevronDown } from "lucide-react";
 import { type User } from "next-auth";
 import { signOut } from "next-auth/react";
 
@@ -26,15 +27,16 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
         <Button
           variant="outline"
           className="flex h-fit w-full items-center justify-start p-0">
-          <div className="flex h-full w-full flex-row items-center justify-start gap-4 overflow-ellipsis p-4">
-            <UserAvatar user={user} className="h-10 w-10" />
+          <div className="flex h-full w-full flex-row items-center justify-start overflow-ellipsis p-4">
+            <UserAvatar user={user} className="mr-4 h-10 w-10" />
             <p
-              className="truncate text-xl font-semibold leading-none tracking-tight"
+              className="mr-2 truncate text-lg font-semibold leading-none tracking-tight"
               style={{
-                margin: 0,
+                marginTop: 0,
               }}>
-              Mahmoud Alhussen
+              {user.name}dsafdsfa
             </p>
+            <CircleChevronDown className="ml-auto flex-shrink-0 flex-grow-0 text-black/50" />
           </div>
         </Button>
       </DropdownMenuTrigger>

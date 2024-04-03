@@ -36,10 +36,10 @@ export default async function DashboardLayout({
         "flex h-screen max-h-screen bg-muted font-sans antialiased",
         inter.variable
       )}>
-      <nav className="flex w-1/5 flex-col items-center justify-start bg-muted p-3 pr-1.5">
+      <nav className="flex w-1/6 max-w-[17%] flex-col items-center justify-start bg-muted p-3 pr-1.5">
         <UserAccountNav user={session.user} />
       </nav>
-      <main className="h-full w-full p-3 pb-0 pl-1.5 pr-0">
+      <main className="h-full w-5/6 p-3 pb-0 pl-1.5 pr-0">
         <div className="h-full w-full rounded-tl-lg border-2 bg-white">
           {children}
         </div>
