@@ -1,4 +1,5 @@
 /** @type {import('prettier').Config & import('prettier-plugin-tailwindcss').options} */
+
 export default {
   endOfLine: "lf",
   printWidth: 80,
