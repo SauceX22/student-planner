@@ -10,7 +10,7 @@ const config = {
     return [
       {
         source: "/",
-        destination: "/home",
+        destination: "/dashboard",
         permanent: false,
       },
     ];

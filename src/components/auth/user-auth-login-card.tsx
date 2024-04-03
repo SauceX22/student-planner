@@ -19,7 +19,7 @@ const UserAuthLoginCard = () => {
   //     const signInResult = await signIn("email", {
   //       email: data.email.toLowerCase(),
   //       redirect: false,
-  //       callbackUrl: searchParams?.get("from") || "/home",
+  //       callbackUrl: searchParams?.get("from") || "/dashboard",
   //     })
 
   //     setIsLoading(false)

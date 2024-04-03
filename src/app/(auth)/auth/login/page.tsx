@@ -9,7 +9,7 @@ export default async function Dashboard() {
 
   if (session) {
     // Redirect to the page the user came from
-    return redirect("/home");
+    return redirect("/dashboard");
   }
 
   return (

@@ -1,12 +1,10 @@
 import { Inter } from "next/font/google";
 import { redirect } from "next/navigation";
 
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserAvatar } from "@/components/user-avatar";
+import { DashboardNav } from "@/components/home/nav";
+import { UserAccountNav } from "@/components/user-account-nav";
 import { cn } from "@/lib/utils";
 import { getServerAuthSession } from "@/server/auth";
-
-import { UserAccountNav } from "../../components/user-account-nav";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -38,6 +36,7 @@ export default async function DashboardLayout({
       )}>
       <nav className="flex w-1/6 max-w-[17%] flex-col items-center justify-start bg-muted p-3 pr-1.5">
         <UserAccountNav user={session.user} />
+        <DashboardNav />
       </nav>
       <main className="h-full w-5/6 p-3 pb-0 pl-1.5 pr-0">
         <div className="h-full w-full rounded-tl-lg border-2 bg-white">
