@@ -8,8 +8,8 @@ import { type Adapter } from "next-auth/adapters";
 import GOOGLEProvider from "next-auth/providers/GOOGLE";
 
 import { env } from "@/env";
-import { db } from "@/server/db";
 import { createTable, users } from "@db/schema";
+import { db } from "@/server/db";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -37,12 +37,22 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
       },
     }),
+    async redirect({ url, baseUrl }) {
+      return baseUrl;
+    },
   },
   adapter: DrizzleAdapter(db, createTable) as Adapter,
   providers: [
     GOOGLEProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
     /**
      * ...add more providers here.
