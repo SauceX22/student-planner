@@ -52,7 +52,7 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
         <DropdownMenuSeparator />
         {dashboardConfig.sidebarNav.map((item, idx) => {
           if (
-            item.managerOnly
+            item.adminOnly
             // TODO && user.role !== "MANAGER"
           ) {
             return null;

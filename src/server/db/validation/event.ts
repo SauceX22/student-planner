@@ -1,6 +1,7 @@
-import { events } from "@db/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
+
+import { events } from "@db/schema";
 
 // Schema for inserting a user - used to validate API requests
 export const insertEventSchema = createInsertSchema(events, {
