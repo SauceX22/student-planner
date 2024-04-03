@@ -1,12 +1,12 @@
 import "@/styles/globals.css";
 
 import { Inter } from "next/font/google";
-
-import { TRPCReactProvider } from "@/trpc/client";
-import { cn } from "@/lib/utils";
-import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
 import NextTopLoader from "nextjs-toploader";
+
+import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
+import { TRPCReactProvider } from "@/trpc/client";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,16 +29,14 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          inter.variable,
-        )}
-      >
+          inter.variable
+        )}>
         <TRPCReactProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="light"
             enableSystem
-            disableTransitionOnChange
-          >
+            disableTransitionOnChange>
             <NextTopLoader
               color="#2247dd"
               initialPosition={0.08}

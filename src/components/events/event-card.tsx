@@ -1,22 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
+
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-  MotionCard,
-  MotionCardContent,
 } from "@/components/ui/card";
-import type { EventType } from "@db/types";
 import { cn } from "@/lib/utils";
-import { AnimatePresence, motion, Variants } from "framer-motion";
-import {
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
 
 type Props = {
   // event: Pick<EventType, "title" | "description" | "color">;
