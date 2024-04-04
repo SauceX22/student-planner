@@ -34,9 +34,9 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
               style={{
                 marginTop: 0,
               }}>
-              {user.name}dsafdsfa
+              {user.name}
             </p>
-            <CircleChevronDown className="ml-auto flex-shrink-0 flex-grow-0 text-black/50" />
+            <CircleChevronDown className="ml-auto flex-shrink-0 flex-grow-0 text-foreground" />
           </div>
         </Button>
       </DropdownMenuTrigger>
