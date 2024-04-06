@@ -22,7 +22,7 @@ export function DashboardNav({}: DashboardNavProps) {
   }
 
   return (
-    <nav className="flex h-fit w-full flex-col items-start justify-start gap-2 px-2 py-6">
+    <nav className="flex h-full w-full flex-col items-start justify-start gap-1 px-2 py-6">
       {items.map((item, index) => {
         if (
           item.adminOnly
@@ -41,8 +41,8 @@ export function DashboardNav({}: DashboardNavProps) {
               className={cn(
                 buttonVariants({ variant: "ghost" }),
                 "group flex h-auto w-full items-center justify-start rounded-md border-none px-4 py-3 text-base font-medium text-foreground hover:bg-white",
-                path === item.href ? "bg-white" : "transparent",
-                item.disabled && "cursor-not-allowed opacity-80"
+                path === item.href ? "bg-white" : "transparent"
+                // { "cursor-not-allowed opacity-80": item.disabled }
               )}>
               <Icon className="mr-2 h-4 w-4" />
               <span>{item.title}</span>

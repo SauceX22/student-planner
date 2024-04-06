@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import { redirect } from "next/navigation";
 
-import { DashboardNav } from "@/components/home/nav";
+import { DashboardNav } from "@/components/dashboard/nav";
 import { UserAccountNav } from "@/components/user-account-nav";
 import { cn } from "@/lib/utils";
 import { getServerAuthSession } from "@/server/auth";
@@ -39,7 +39,7 @@ export default async function DashboardLayout({
         <DashboardNav />
       </nav>
       <main className="h-full w-5/6 p-3 pb-0 pl-1.5 pr-0">
-        <div className="h-full w-full rounded-tl-lg border-2 bg-white">
+        <div className="h-full w-full overflow-hidden rounded-tl-lg border-2 bg-white">
           {children}
         </div>
       </main>

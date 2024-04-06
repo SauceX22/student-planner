@@ -61,7 +61,7 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
           }
 
           return (
-            <DropdownMenuItem key={idx} asChild>
+            <DropdownMenuItem key={idx} asChild className="cursor-pointer ">
               <Link prefetch href={item.href}>
                 {item.title}
               </Link>
