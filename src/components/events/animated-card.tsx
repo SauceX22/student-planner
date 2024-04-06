@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { useMouse } from "@uidotdev/usehooks";
-import { AnimatePresence, useDragControls } from "framer-motion";
+import React, { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { CardDescription, CardTitle } from "@/components/ui/card";
 import {
   MotionCard,
   MotionCardContent,
