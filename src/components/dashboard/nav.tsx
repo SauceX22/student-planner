@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 
 import { dashboardConfig } from "@/config/dashboard";
@@ -13,6 +14,8 @@ interface DashboardNavProps {
 }
 
 const items = dashboardConfig.sidebarNav;
+
+const MotionLink = motion(Link);
 
 export function DashboardNav({}: DashboardNavProps) {
   const path = usePathname();
@@ -34,19 +37,28 @@ export function DashboardNav({}: DashboardNavProps) {
         const Icon = item.icon ?? ChevronRight;
         return (
           item.href && (
-            <Link
+            <MotionLink
+              layout
               prefetch
               key={index}
               href={item.disabled ? "/dashboard" : item.href}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{
+                duration: 0.1,
+                type: "spring",
+                stiffness: 700,
+                damping: 30,
+              }}
               className={cn(
                 buttonVariants({ variant: "ghost" }),
                 "group flex h-auto w-full items-center justify-start rounded-md border-none px-4 py-3 text-base font-medium text-foreground hover:bg-white",
-                path === item.href ? "bg-white" : "transparent"
+                path === item.href ? "shadow-mds bg-white" : "transparent"
                 // { "cursor-not-allowed opacity-80": item.disabled }
               )}>
               <Icon className="mr-2 h-4 w-4" />
               <span>{item.title}</span>
-            </Link>
+            </MotionLink>
           )
         );
       })}
