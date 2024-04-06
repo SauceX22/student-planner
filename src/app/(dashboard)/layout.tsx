@@ -39,7 +39,7 @@ export default async function DashboardLayout({
         <DashboardNav />
       </nav>
       <main className="h-full w-5/6 p-3 pb-0 pl-1.5 pr-0">
-        <div className="h-full w-full overflow-hidden rounded-tl-lg border-2 bg-white">
+        <div className="h-full w-full overflow-hidden rounded-tl-lg border-2 bg-white shadow-sm">
           {children}
         </div>
       </main>

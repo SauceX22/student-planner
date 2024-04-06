@@ -26,7 +26,7 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="flex h-fit w-full items-center justify-start p-0">
+          className="flex h-fit w-full items-center justify-start bg-white p-0 shadow-sm">
           <div className="flex h-full w-full flex-row items-center justify-start overflow-ellipsis p-4">
             <UserAvatar user={user} className="mr-4 h-10 w-10" />
             <p

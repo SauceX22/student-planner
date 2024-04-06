@@ -25,7 +25,7 @@ export function DashboardNav({}: DashboardNavProps) {
   }
 
   return (
-    <nav className="flex h-full w-full flex-col items-start justify-start gap-1 px-2 py-6">
+    <nav className="flex h-full w-full flex-col items-start justify-start gap-1 px-2 pb-2 pt-6">
       {items.map((item, index) => {
         if (
           item.adminOnly
@@ -52,9 +52,10 @@ export function DashboardNav({}: DashboardNavProps) {
               }}
               className={cn(
                 buttonVariants({ variant: "ghost" }),
-                "group flex h-auto w-full items-center justify-start rounded-md border-none px-4 py-3 text-base font-medium text-foreground hover:bg-white",
-                path === item.href ? "shadow-mds bg-white" : "transparent"
-                // { "cursor-not-allowed opacity-80": item.disabled }
+                "group flex h-auto w-full items-center justify-start rounded-md border-none px-4 py-3 text-base font-medium text-foreground hover:bg-white hover:shadow-sm",
+                path === item.href ? "bg-white shadow-sm" : "transparent",
+                { "cursor-not-allowed opacity-80": item.disabled },
+                { "mt-auto": index === items.length - 1 }
               )}>
               <Icon className="mr-2 h-4 w-4" />
               <span>{item.title}</span>
