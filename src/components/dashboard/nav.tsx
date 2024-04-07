@@ -24,7 +24,7 @@ const MotionLink = m(Link);
 const MotionUserAccountNav = m(UserAccountNav);
 
 const HOVER_THRESHOLD = 0.15 as const;
-const DEBOUNCE_TIME = 600 as const;
+const DEBOUNCE_TIME = 400 as const;
 
 export function DashboardNav({ user }: DashboardNavProps) {
   const path = usePathname();
@@ -48,83 +48,69 @@ export function DashboardNav({ user }: DashboardNavProps) {
   }
 
   return (
-    <m.nav className="h- fixed left-0 top-0 z-10 m-6 flex w-[20%] flex-col items-center justify-start rounded-lg bg-white p-3 pr-1.5 shadow-xl">
-      <Introduction focusChat={() => {}} />
+    <nav
+      className={cn(
+        "fixed left-0 top-0 z-10 m-6 flex h-[95%] w-[20%] flex-col items-center justify-start rounded-lg border-2 bg-white p-2 shadow-xl transition-transform duration-500",
+        !expanded && "-translate-x-[130%] transform"
+      )}>
+      {/* <Introduction focusChat={() => {}} /> */}
+      <UserAccountNav user={user} />
       <AnimatePresence>
         {expanded && (
-          <>
-            <MotionUserAccountNav
-              user={user}
-              initial={{
-                filter: "blur(2px)",
-                opacity: 0,
-              }}
-              animate={{
-                filter: "blur(0px)",
-                opacity: 1,
-              }}
-              exit={{
-                filter: "blur(2px)",
-                opacity: 0,
-              }}
-            />
-            <div className="flex h-full w-full flex-col items-start justify-start gap-1 px-2 pb-2 pt-6">
-              {items.map((item, index) => {
-                if (
-                  item.adminOnly
-                  // TODO && session?.user.role !== "MANAGER"
-                ) {
-                  return null;
-                }
+          <div className="flex h-full w-full flex-col items-start justify-start gap-1 px-2 pb-2 pt-6">
+            {items.map((item, index) => {
+              if (
+                item.adminOnly
+                // TODO && session?.user.role !== "MANAGER"
+              ) {
+                return null;
+              }
 
-                const Icon = item.icon ?? ChevronRight;
-                return (
-                  item.href && (
-                    <MotionLink
-                      layout
-                      prefetch
-                      initial={{
-                        filter: "blur(2px)",
-                        opacity: 0,
-                      }}
-                      animate={{
-                        filter: "blur(0px)",
-                        opacity: 1,
-                      }}
-                      exit={{
-                        filter: "blur(2px)",
-                        opacity: 0,
-                      }}
-                      key={index}
-                      href={item.disabled ? "/dashboard" : item.href}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{
-                        duration: 0.1,
-                        type: "spring",
-                        stiffness: 700,
-                        damping: 30,
-                      }}
-                      className={cn(
-                        buttonVariants({ variant: "ghost" }),
-                        "group flex h-auto w-full items-center justify-start rounded-md border-none px-4 py-3 text-base font-medium text-foreground hover:bg-white hover:shadow-sm",
-                        path === item.href
-                          ? "bg-white shadow-sm"
-                          : "transparent",
-                        { "cursor-not-allowed opacity-80": item.disabled },
-                        { "mt-auto": index === items.length - 1 }
-                      )}>
-                      <Icon className="mr-2 h-4 w-4" />
-                      <span>{item.title}</span>
-                    </MotionLink>
-                  )
-                );
-              })}
-            </div>
-          </>
+              const Icon = item.icon ?? ChevronRight;
+              return (
+                item.href && (
+                  <MotionLink
+                    layout
+                    prefetch
+                    initial={{
+                      filter: "blur(2px)",
+                      opacity: 0,
+                    }}
+                    animate={{
+                      filter: "blur(0px)",
+                      opacity: 1,
+                    }}
+                    exit={{
+                      filter: "blur(2px)",
+                      opacity: 0,
+                    }}
+                    key={index}
+                    href={item.disabled ? "/dashboard" : item.href}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{
+                      duration: 0.1,
+                      type: "spring",
+                      stiffness: 700,
+                      damping: 30,
+                    }}
+                    className={cn(
+                      buttonVariants({ variant: "ghost" }),
+                      "group flex h-auto w-full items-center justify-start rounded-md border-none px-4 py-3 text-base font-medium text-foreground hover:bg-white hover:shadow-sm",
+                      path === item.href ? "bg-white shadow-sm" : "transparent",
+                      { "cursor-not-allowed opacity-80": item.disabled },
+                      { "mt-auto": index === items.length - 1 }
+                    )}>
+                    <Icon className="mr-2 h-4 w-4" />
+                    <span>{item.title}</span>
+                  </MotionLink>
+                )
+              );
+            })}
+          </div>
         )}
       </AnimatePresence>
-    </m.nav>
+    </nav>
   );
 }
 
