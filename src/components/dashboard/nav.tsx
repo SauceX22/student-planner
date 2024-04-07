@@ -24,11 +24,11 @@ const MotionLink = m(Link);
 const MotionUserAccountNav = m(UserAccountNav);
 
 const HOVER_THRESHOLD = 0.15 as const;
-const DEBOUNCE_TIME = 400 as const;
+const DEBOUNCE_TIME = 440 as const;
 
 export function DashboardNav({ user }: DashboardNavProps) {
   const path = usePathname();
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
 
   const handleHoverEnd = debounce(() => {
     setExpanded(false);
@@ -50,10 +50,11 @@ export function DashboardNav({ user }: DashboardNavProps) {
   return (
     <nav
       className={cn(
-        "fixed left-0 top-0 z-10 m-6 flex h-[95%] w-[20%] flex-col items-center justify-start rounded-lg border-2 bg-white p-2 shadow-xl transition-transform duration-500",
-        !expanded && "-translate-x-[130%] transform"
+        "fixed left-0 top-0 z-50 m-6 flex h-[95%] w-[20%] flex-col items-center justify-start rounded-lg border-2 bg-white p-2 shadow-xl ease-out",
+        "transform transition duration-500",
+        expanded ? "-translate-x-0" : "-translate-x-[130%]"
+        // move the data-state stuff to use expanded state
       )}>
-      {/* <Introduction focusChat={() => {}} /> */}
       <UserAccountNav user={user} />
       <AnimatePresence>
         {expanded && (
