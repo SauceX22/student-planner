@@ -1,6 +1,4 @@
-type Props = {};
-
-const SettingsPage = (props: Props) => {
+const SettingsPage = () => {
   return <div className="flex items-center justify-center">Settings Page</div>;
 };
 

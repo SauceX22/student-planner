@@ -95,7 +95,7 @@ const HoverCard = ({ className, ...props }: Props) => {
             className="rounded-xl bg-muted px-6 py-4" // Remove overflow-hidden class
           >
             <p>
-              Yes. It's animated by default, but you can disable it if you
+              Yes. It&apos;s animated by default, but you can disable it if you
               prefer.
             </p>
           </MotionCardContent>

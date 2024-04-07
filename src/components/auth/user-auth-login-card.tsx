@@ -42,7 +42,7 @@ const UserAuthLoginCard = () => {
     setIsGoogleLoading(true);
 
     const signInResult = await signIn("google", {
-      callbackUrl: searchParams?.get("from") || "/auth/login",
+      callbackUrl: searchParams?.get("from") ?? "/auth/login",
     });
   }
 

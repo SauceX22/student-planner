@@ -138,5 +138,6 @@ const MotionButton = React.forwardRef<typeof motion.button, MotionButtonProps>(
     );
   }
 );
+MotionButton.displayName = "MotionButton";
 
 export { Button, MotionButton, buttonVariants };

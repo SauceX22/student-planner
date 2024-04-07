@@ -1,8 +1,9 @@
-import AnimatedCard from "@/components/events/animated-card";
-import { Card } from "@/components/ui/card";
 import React, { useState } from "react";
 
-type Props = {} & React.ComponentProps<typeof Card>;
+import { Card } from "@/components/ui/card";
+import AnimatedCard from "@/components/events/animated-card";
+
+type Props = React.ComponentProps<typeof Card>;
 
 // always retracted, on hover expand down
 const HoverCardList = ({ className, ...props }: Props) => {
