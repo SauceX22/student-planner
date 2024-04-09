@@ -1,17 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMouse } from "@uidotdev/usehooks";
+import { useHover, useIdle, useMouse } from "@uidotdev/usehooks";
 import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
 import { debounce } from "lodash";
-import { ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import type { User } from "next-auth";
 
 import { dashboardConfig } from "@/config/dashboard";
-import { buttonVariants } from "@/components/ui/button";
+import { useMouseAcceleration } from "@/hooks/useMouseAcceleration";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { UserAccountNav } from "@/components/user-account-nav";
+import { UserAvatar } from "@/components/user-avatar";
 import { cn } from "@/lib/utils";
 
 interface DashboardNavProps {
@@ -23,25 +26,37 @@ const items = dashboardConfig.sidebarNav;
 
 const MotionLink = m(Link);
 
-const HOVER_THRESHOLD = 0.13;
-const DEBOUNCE_TIME = 450;
+const SHOW_MOUSE_THRESHOLD = 0.17;
+const HIDE_TIME = 500;
+const EXPANDED_WIDTH = "17%";
 
 export function DashboardNav({ user }: DashboardNavProps) {
   const path = usePathname();
-  const [expanded, setExpanded] = useState(false);
+  const [shown, setShown] = useState(false);
+  const idle = useIdle(5000);
 
-  const handleHide = debounce(() => {
-    setExpanded(false);
-  }, DEBOUNCE_TIME); // Adjust debounce delay as needed
+  const debounceHide = debounce(() => {
+    setShown(false);
+  }, HIDE_TIME);
 
-  window?.addEventListener("mousemove", (mouseEvent) => {
-    handleHide.cancel();
-    if (mouseEvent.clientX < window.innerWidth * HOVER_THRESHOLD) {
-      setExpanded(true);
-    } else {
-      handleHide();
+  useEffect(() => {
+    if (shown && idle) {
+      setShown(false);
     }
-  });
+  }, [idle]);
+
+  useEffect(() => {
+    function handler(mouseEvent: MouseEvent) {
+      if (mouseEvent.clientX < window.innerWidth * SHOW_MOUSE_THRESHOLD) {
+        debounceHide.cancel();
+        setShown(true);
+      } else {
+        debounceHide();
+      }
+    }
+    window.addEventListener("mousemove", handler);
+    return () => window.removeEventListener("mousemove", handler);
+  }, []);
 
   if (!items?.length) {
     return null;
@@ -50,34 +65,83 @@ export function DashboardNav({ user }: DashboardNavProps) {
   return (
     <LazyMotion features={domAnimation}>
       <AnimatePresence>
-        {expanded && (
+        {shown && (
           <m.nav
-            className="fixed left-0 top-0 z-50 m-6 flex h-[95%] w-[18%] flex-col items-center justify-start rounded-xl border-2 border-input bg-muted p-3 shadow-lg"
+            className="fixed left-0 top-0 z-50 m-[3vh] flex h-[94%] flex-col items-center 
+            justify-start rounded-lg border-2 border-input bg-muted p-3  hover:opacity-100"
             layout
+            style={{
+              // backfaceVisibility: "hidden",
+              transform: "translateZ(0)",
+              WebkitFontSmoothing: "subpixel-antialiased",
+            }}
             initial={{
-              x: "-130%",
               filter: "blur(1px)",
+              opacity: 0,
+              scale: 0.95,
+              width: "5%",
             }}
             animate={{
-              x: "0",
               filter: "blur(0px)",
+              opacity: 1,
+              scale: 1,
+              width: EXPANDED_WIDTH,
             }}
             whileHover={{
-              x: "0",
               filter: "blur(0px)",
+              opacity: 1,
+              width: EXPANDED_WIDTH,
+            }}
+            onHoverStart={() => {
+              debounceHide.cancel();
+              setShown(true);
+            }}
+            onHoverEnd={() => {
+              debounceHide();
             }}
             exit={{
-              x: "-130%",
-              filter: "blur(1px)",
+              filter: "blur(2px)",
+              opacity: 0,
+              scale: 0.95,
+              width: "5%",
             }}
             transition={{
-              duration: 0.2,
+              duration: 0.18,
               type: "spring",
               stiffness: 400,
               damping: 30,
             }}>
-            <UserAccountNav user={user} />
-            <div className="flex h-full w-full flex-col items-start justify-start gap-1 px-2 pb-2 pt-6">
+            <UserAccountNav user={user} modal={false}>
+              <Button
+                variant="ghost"
+                className="flex h-fit w-full items-center justify-start overflow-hidden rounded-md p-0 hover:bg-white hover:shadow-sm">
+                <div className="flex h-full w-full flex-row items-center justify-start overflow-ellipsis p-4">
+                  <UserAvatar user={user} className="mr-3 h-10 w-10" />
+                  <m.p
+                    className="mr-2 truncate text-lg font-semibold leading-none tracking-tight"
+                    style={{
+                      marginTop: 0,
+                    }}
+                    initial={{
+                      opacity: 0,
+                      x: 100,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      x: 0,
+                    }}
+                    transition={{
+                      duration: 0.25,
+                      ease: "easeOut",
+                    }}>
+                    {user.name}
+                  </m.p>
+                  <ChevronDown className="ml-auto flex-shrink-0 flex-grow-0 text-foreground" />
+                </div>
+              </Button>
+            </UserAccountNav>
+            <Separator className="my-4 w-full" />
+            <div className="flex h-full w-full flex-col items-start justify-start gap-1 px-2 py-2">
               {items.map((item, index) => {
                 if (
                   item.adminOnly
@@ -108,11 +172,26 @@ export function DashboardNav({ user }: DashboardNavProps) {
                         path === item.href
                           ? "bg-white shadow-sm"
                           : "transparent",
-                        { "cursor-not-allowed opacity-80": item.disabled },
-                        { "mt-auto": index === items.length - 1 }
+                        { "cursor-not-allowed opacity-80": item.disabled }
+                        // { "mt-auto": index === items.length - 1 }
                       )}>
                       <Icon className="mr-2 h-4 w-4" />
-                      <span>{item.title}</span>
+                      <m.span
+                        initial={{
+                          opacity: 0,
+                          x: 100,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          x: 0,
+                        }}
+                        transition={{
+                          duration: 0.25,
+                          ease: "easeOut",
+                          delay: 0.02 * index,
+                        }}>
+                        {item.title}
+                      </m.span>
                     </MotionLink>
                   )
                 );
