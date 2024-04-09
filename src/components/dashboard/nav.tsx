@@ -127,12 +127,19 @@ export function DashboardNav({ user }: DashboardNavProps) {
                       marginTop: 0,
                     }}
                     initial={{
-                      opacity: 0,
+                      opacity: 0.6,
+                      filter: "blur(2px)",
                       x: 100,
                     }}
                     animate={{
                       opacity: 1,
+                      filter: "blur(0px)",
                       x: 0,
+                    }}
+                    exit={{
+                      opacity: 0.6,
+                      filter: "blur(2px)",
+                      x: 100,
                     }}
                     transition={{
                       duration: 0.25,
@@ -182,12 +189,19 @@ export function DashboardNav({ user }: DashboardNavProps) {
                       <Icon className="mr-2 h-4 w-4" />
                       <m.span
                         initial={{
-                          opacity: 0,
+                          opacity: 0.6,
+                          filter: "blur(2px)",
                           x: 100,
                         }}
                         animate={{
                           opacity: 1,
+                          filter: "blur(0px)",
                           x: 0,
+                        }}
+                        exit={{
+                          opacity: 0.6,
+                          filter: "blur(2px)",
+                          x: 100,
                         }}
                         transition={{
                           duration: 0.25,
