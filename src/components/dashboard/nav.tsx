@@ -25,7 +25,7 @@ const items = dashboardConfig.sidebarNav;
 
 const MotionLink = m(Link);
 
-const SHOW_MOUSE_THRESHOLD = 0.17;
+const SHOW_MOUSE_THRESHOLD = 0.08;
 const HIDE_TIME = 500;
 const EXPANDED_WIDTH = "17%";
 
@@ -49,8 +49,6 @@ export function DashboardNav({ user }: DashboardNavProps) {
       if (mouseEvent.clientX < window.innerWidth * SHOW_MOUSE_THRESHOLD) {
         debounceHide.cancel();
         setShown(true);
-      } else {
-        debounceHide();
       }
     }
     window.addEventListener("mousemove", handler);
@@ -96,11 +94,11 @@ export function DashboardNav({ user }: DashboardNavProps) {
               opacity: 1,
               width: EXPANDED_WIDTH,
             }}
-            onHoverStart={() => {
+            onMouseOver={(e) => {
               debounceHide.cancel();
               setShown(true);
             }}
-            onHoverEnd={() => {
+            onMouseLeave={(e) => {
               debounceHide();
             }}
             exit={{
