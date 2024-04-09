@@ -63,6 +63,11 @@ export function DashboardNav({ user }: DashboardNavProps) {
 
   return (
     <LazyMotion features={domAnimation}>
+      {/* <div
+        className="absolute left-0 top-0 z-10 h-full bg-purple-500/25"
+        style={{
+          width: window.innerWidth * SHOW_MOUSE_THRESHOLD,
+        }}></div> */}
       <AnimatePresence>
         {shown && (
           <m.nav
