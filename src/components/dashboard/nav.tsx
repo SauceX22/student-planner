@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useHover, useIdle, useMouse } from "@uidotdev/usehooks";
+import { useIdle } from "@uidotdev/usehooks";
 import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
 import { debounce } from "lodash";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import type { User } from "next-auth";
 
 import { dashboardConfig } from "@/config/dashboard";
-import { useMouseAcceleration } from "@/hooks/useMouseAcceleration";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { UserAccountNav } from "@/components/user-account-nav";

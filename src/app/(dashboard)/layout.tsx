@@ -2,7 +2,6 @@ import { Inter } from "next/font/google";
 import { redirect } from "next/navigation";
 
 import { DashboardNav } from "@/components/dashboard/nav";
-import { UserAccountNav } from "@/components/user-account-nav";
 import { cn } from "@/lib/utils";
 import { getServerAuthSession } from "@/server/auth";
 
