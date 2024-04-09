@@ -66,7 +66,7 @@ export function DashboardNav({ user }: DashboardNavProps) {
       <AnimatePresence>
         {shown && (
           <m.nav
-            className="fixed left-0 top-0 z-50 m-[3vh] flex h-[94%] flex-col items-center justify-start
+            className="fixed left-0 top-0 z-50 m-5 flex h-[96%] flex-col items-center justify-start
             rounded-md border-2 border-input bg-muted p-3 text-muted-foreground  hover:opacity-100"
             layout
             style={{
