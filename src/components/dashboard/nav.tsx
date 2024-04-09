@@ -67,8 +67,8 @@ export function DashboardNav({ user }: DashboardNavProps) {
       <AnimatePresence>
         {shown && (
           <m.nav
-            className="fixed left-0 top-0 z-50 m-[3vh] flex h-[94%] flex-col items-center 
-            justify-start rounded-lg border-2 border-input bg-muted p-3  hover:opacity-100"
+            className="fixed left-0 top-0 z-50 m-[3vh] flex h-[94%] flex-col items-center justify-start
+            rounded-lg border-2 border-input bg-muted p-3 text-muted-foreground  hover:opacity-100"
             layout
             style={{
               // backfaceVisibility: "hidden",
@@ -114,7 +114,7 @@ export function DashboardNav({ user }: DashboardNavProps) {
             <UserAccountNav user={user} modal={false}>
               <Button
                 variant="ghost"
-                className="flex h-fit w-full items-center justify-start overflow-hidden rounded-md p-0 hover:bg-white hover:shadow-sm">
+                className="flex h-fit w-full items-center justify-start overflow-hidden rounded-md p-0 hover:bg-background hover:shadow-sm">
                 <div className="flex h-full w-full flex-row items-center justify-start overflow-ellipsis p-4">
                   <UserAvatar user={user} className="mr-3 h-10 w-10" />
                   <m.p
@@ -168,9 +168,9 @@ export function DashboardNav({ user }: DashboardNavProps) {
                       }}
                       className={cn(
                         buttonVariants({ variant: "ghost" }),
-                        "group flex h-auto w-full items-center justify-start rounded-md border-none px-4 py-3 text-base font-medium text-foreground hover:bg-white hover:shadow-sm",
+                        "group flex h-auto w-full items-center justify-start rounded-md border-none px-4 py-3 text-base font-medium text-foreground hover:bg-background hover:shadow-sm",
                         path === item.href
-                          ? "bg-white shadow-sm"
+                          ? "bg-background shadow-sm"
                           : "transparent",
                         { "cursor-not-allowed opacity-80": item.disabled }
                         // { "mt-auto": index === items.length - 1 }
