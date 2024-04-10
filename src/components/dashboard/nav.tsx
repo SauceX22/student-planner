@@ -25,9 +25,9 @@ const items = dashboardConfig.sidebarNav;
 
 const MotionLink = m(Link);
 
-const SHOW_MOUSE_THRESHOLD = 0.08;
+const SHOW_MOUSE_THRESHOLD = 0.06;
 const HIDE_TIME = 500;
-const EXPANDED_WIDTH = "17%";
+const EXPANDED_WIDTH = "20%";
 
 export function DashboardNav({ user }: DashboardNavProps) {
   const path = usePathname();
@@ -70,7 +70,7 @@ export function DashboardNav({ user }: DashboardNavProps) {
         {shown && (
           <m.nav
             className="fixed left-0 top-0 z-50 m-5 flex h-[96%] flex-col items-center justify-start
-            rounded-md border-2 border-input bg-muted p-3 text-muted-foreground  hover:opacity-100"
+            rounded-lg border-2 border-input bg-muted p-3 text-muted-foreground  hover:opacity-100"
             layout
             style={{
               // backfaceVisibility: "hidden",
@@ -116,11 +116,11 @@ export function DashboardNav({ user }: DashboardNavProps) {
             <UserAccountNav user={user} modal={false}>
               <Button
                 variant="ghost"
-                className="flex h-fit w-full items-center justify-start overflow-hidden rounded-md p-0 hover:bg-background hover:shadow-sm">
-                <div className="flex h-full w-full flex-row items-center justify-start overflow-ellipsis p-4">
-                  <UserAvatar user={user} className="mr-3 h-10 w-10" />
+                className="flex h-fit w-full items-center justify-start overflow-hidden rounded-lg p-0 hover:bg-background hover:shadow-sm">
+                <div className="flex h-full w-full flex-row items-center justify-start overflow-ellipsis px-5 py-7">
+                  <UserAvatar user={user} className="mr-3 h-12 w-12" />
                   <m.p
-                    className="mr-2 truncate text-lg font-semibold leading-none tracking-tight"
+                    className="mr-2 truncate text-xl font-semibold leading-none tracking-tight"
                     style={{
                       marginTop: 0,
                     }}

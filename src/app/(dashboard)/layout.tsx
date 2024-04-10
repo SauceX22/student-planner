@@ -35,7 +35,7 @@ export default async function DashboardLayout({
       )}>
       <DashboardNav user={session.user} />
       <main className="h-full w-full p-2">
-        <div className="h-full w-full overflow-hidden rounded-md border-2 bg-background shadow-sm">
+        <div className="h-full w-full overflow-hidden rounded-lg border-2 bg-background shadow-sm">
           {children}
         </div>
       </main>
