@@ -1,177 +1,137 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
 import {
-  add,
+  addMonths,
   eachDayOfInterval,
   endOfMonth,
   endOfWeek,
   format,
   isSameDay,
-  parse,
+  startOfMonth,
   startOfToday,
   startOfWeek,
+  subMonths,
 } from "date-fns";
+import { CalendarCheck2, ChevronLeft, ChevronRight } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import {
-  useCalendarData,
-  useDisplayedMonth,
-  useManipulatingEvent,
-  useSelectedDay,
-  useSelectedEvent,
-} from "@/lib/store/event";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useCalendarSelection } from "@/lib/store/event";
+import { cn } from "@/lib/utils";
 import { api } from "@/trpc/client";
 
 import CalendarDay from "./calendar-day";
-import CalendarHeader from "./calendar-header";
 
 export function Calendar() {
   const today = startOfToday();
-  const { selectedDay, setSelectedDay } = useSelectedDay();
-  const { firstDayDispCalendar, setFirstDayDispCalendar } = useCalendarData();
-  const { reschedulingEvent, setReschedulingEvent } = useManipulatingEvent();
-  const { selectedEvent, setSelectedEvent } = useSelectedEvent();
-  const [dispMonth, setDispMonth] = useState(format(today, "MMM-yyyy"));
-
-  // TODO hardcoded user perfs data
-  const userPrefsData = {
-    userPrefs: {
-      showDaysOutOfMonth: true,
-    },
-  };
+  const { selectedDay, setSelectedDay } = useCalendarSelection();
+  // const { selectedEvent, setSelectedEvent } = useSelectedEvent();
 
   const { data: monthEvents, isLoading: isLoadingMonthEvents } =
-    api.event.listMonthEvents.useQuery({
-      firstDispDay: userPrefsData?.userPrefs?.showDaysOutOfMonth
-        ? startOfWeek(firstDayDispCalendar)
-        : firstDayDispCalendar,
-      lastDispDay: userPrefsData?.userPrefs?.showDaysOutOfMonth
-        ? endOfWeek(endOfMonth(firstDayDispCalendar))
-        : endOfMonth(firstDayDispCalendar),
+    api.event.getEventsForMonth.useQuery({
+      month: startOfMonth(selectedDay),
     });
 
-  const daysOfMonth = (firstDayOfTheMonth: Date) =>
-    eachDayOfInterval({
-      start: userPrefsData?.userPrefs?.showDaysOutOfMonth
-        ? startOfWeek(firstDayOfTheMonth)
-        : firstDayOfTheMonth,
-      end: userPrefsData?.userPrefs?.showDaysOutOfMonth
-        ? endOfWeek(endOfMonth(firstDayOfTheMonth))
-        : endOfMonth(firstDayOfTheMonth),
+  function getDaysOfBlock(month: Date) {
+    return eachDayOfInterval({
+      start: startOfWeek(startOfMonth(month)),
+      end: endOfWeek(endOfMonth(month)),
     });
+  }
 
   function goToCurrentMonth() {
     setSelectedDay(today);
-    setFirstDayDispCalendar(parse(dispMonth, "MMM-yyyy", new Date()));
   }
 
-  function getFirstDayPrevMonth(): Date {
-    const firstDayPreviousMonth = add(firstDayDispCalendar, { months: -1 });
-    setFirstDayDispCalendar(firstDayPreviousMonth);
-    return firstDayPreviousMonth;
+  function goToPreviousMonth() {
+    setSelectedDay(subMonths(selectedDay, 1));
   }
 
-  function getFirstDayNextMonth(): Date {
-    const firstDayNextMonth = add(firstDayDispCalendar, { months: 1 });
-    setFirstDayDispCalendar(firstDayNextMonth);
-    return firstDayNextMonth;
+  function goToNextMonth() {
+    setSelectedDay(addMonths(selectedDay, 1));
   }
 
-  function previousMonth() {
-    setDispMonth(format(getFirstDayPrevMonth(), "MMM-yyyy"));
+  function getDayEvents(day: Date) {
+    return monthEvents?.filter((event) => isSameDay(event.due, day));
   }
-
-  function nextMonth() {
-    setDispMonth(format(getFirstDayNextMonth(), "MMM-yyyy"));
-  }
-
-  const getDayEvents = (day: Date) =>
-    monthEvents?.filter((event) => isSameDay(event.due, day));
-
-  const trpcUtils = api.useUtils();
-  const rescheduleEvent = api.event.reschedule.useMutation({
-    async onSuccess() {
-      await trpcUtils.event.listMonthEvents.invalidate({
-        firstDispDay: selectedDay,
-        lastDispDay: selectedDay,
-      });
-    },
-  });
-
-  useEffect(() => {
-    setDispMonth(format(selectedDay, "MMM-yyyy"));
-    // if we're rescheudling an event, we want to call trpc to reschedule the event
-    const rescheduleSelectedEvent = async () => {
-      if (selectedEvent && reschedulingEvent) {
-        try {
-          await rescheduleEvent.mutateAsync({
-            id: selectedEvent.id,
-            due: selectedDay,
-          });
-        } catch (error) {
-          console.log(error);
-        }
-        setReschedulingEvent(false);
-      }
-    };
-    rescheduleSelectedEvent();
-  }, [selectedDay]);
 
   return (
-    <div
-      className={`w-[40rem] max-w-xl select-none rounded-lg font-light md:px-4 md:py-4 md:text-xl lg:text-2xl ${
-        isLoadingMonthEvents && "bg-neutral-800 grayscale"
-      }`}>
-      {/* Header */}
-      <div className="mb-2 grid grid-cols-1 divide-x-8 divide-transparent">
-        <div>
-          {/* Control Header */}
-          <CalendarHeader
-            firstDayCurrentMonth={firstDayDispCalendar}
-            goToCurrentMonth={goToCurrentMonth}
-            previousMonth={previousMonth}
-            nextMonth={nextMonth}
-          />
+    <Card
+      className={cn("mb-auto w-fit select-none rounded-lg p-6 font-light", {
+        grayscale: isLoadingMonthEvents,
+      })}>
+      <CardHeader className="mb-4 grid grid-cols-1 p-0">
+        <div className="flex justify-center rounded-lg border border-neutral-800 p-6 shadow-md">
+          <div className="flex flex-auto flex-col items-start justify-center gap-2">
+            <CardTitle className="my-auto flex-auto items-center justify-center text-xl font-bold md:text-5xl">
+              {format(selectedDay, "MMM yyyy")}
+            </CardTitle>
+            <CardDescription>
+              {/* mention the actual selected day */}
+              {format(selectedDay, "MMM d, yyyy")}
+            </CardDescription>
+          </div>
 
-          {/* === Headers for Days === */}
-          <div className="mt-5 grid cursor-default grid-cols-7 text-center text-lg font-normal leading-8 text-gray-500">
-            <div>S</div>
-            <div>M</div>
-            <div>T</div>
-            <div>W</div>
-            <div>T</div>
-            <div>F</div>
-            <div>S</div>
+          <div className="flex items-center justify-center gap-2">
+            <Button
+              size="icon"
+              variant="outline"
+              name="Current month"
+              className="h-fit w-fit rounded-full p-4"
+              onClick={goToCurrentMonth}>
+              <CalendarCheck2 className="h-6 w-6" />
+            </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              name="Previous month"
+              className="h-fit w-fit rounded-full p-4"
+              onClick={goToPreviousMonth}>
+              <ChevronLeft className="h-6 w-6" />
+            </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              name="Next month"
+              className="h-fit w-fit rounded-full p-4"
+              onClick={goToNextMonth}>
+              <ChevronRight className="h-6 w-6" />
+            </Button>
           </div>
         </div>
+      </CardHeader>
+
+      {/* === Headers for Days === */}
+      <div className="mb-2 grid grid-cols-7 rounded-md border border-red-400 bg-red-300 py-1 text-center text-lg font-semibold leading-8">
+        <div>S</div>
+        <div>M</div>
+        <div>T</div>
+        <div>W</div>
+        <div>T</div>
+        <div>F</div>
+        <div>S</div>
       </div>
 
       {/* Calendar */}
       {/* === Days === */}
-      <div className="h-full w-full">
-        {isLoadingMonthEvents ? (
-          <div className="loading-spinner border-t-3 duration-2000 mx-auto h-16 w-16 animate-spin rounded-[100%] border-2 border-transparent border-t-slate-400"></div>
-        ) : (
-          <div className="text-md mb-4 mt-0 grid grid-cols-7">
-            {daysOfMonth(firstDayDispCalendar).map((day, dayIndx) => (
-              <CalendarDay
-                key={day.toISOString()}
-                day={day}
-                dayIndx={dayIndx}
-                firstDayOfMonth={firstDayDispCalendar}
-                dayEvents={getDayEvents(day)!}
-                magnetProps={{
-                  speed: 0.5,
-                  scale: 1.5,
-                  tollerance: 0.5,
-                  borderRadius: "30px",
-                }}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+      <CardContent className="grid grid-cols-7 rounded-md border border-orange-300 bg-orange-200 p-1 text-center text-lg font-semibold leading-8">
+        {getDaysOfBlock(selectedDay).map((day, dayIndx) => (
+          <CalendarDay
+            key={day.toISOString()}
+            day={day}
+            dayIndx={dayIndx}
+            firstDayOfMonth={startOfMonth(selectedDay)}
+            dayEvents={getDayEvents(day) ?? []}
+            className="p-2 text-center text-sm"
+          />
+        ))}
+      </CardContent>
+    </Card>
   );
 }

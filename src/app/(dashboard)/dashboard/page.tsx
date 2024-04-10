@@ -8,7 +8,7 @@ const HomePage = () => {
     <DashboardShell>
       <DashboardHeader heading="Home" text="" />
       <Separator className="mt-4 w-full" />
-      <div className="flex h-full w-full items-center justify-center overflow-hidden px-6 py-4">
+      <div className="mx-auto flex h-full w-full items-center  justify-center overflow-hidden px-6 py-4 xl:w-2/3">
         <Calendar />
       </div>
     </DashboardShell>
