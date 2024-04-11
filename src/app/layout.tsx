@@ -4,7 +4,9 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import NextTopLoader from "nextjs-toploader";
 
+import { env } from "@/env";
 import { Toaster } from "@/components/ui/sonner";
+import { ScreenSize } from "@/components/screen-size-indicator";
 import { cn } from "@/lib/utils";
 import { TRPCReactProvider } from "@/trpc/client";
 
@@ -49,6 +51,7 @@ export default function RootLayout({
               shadow="0 0 10px #2247dd,0 0 5px #2247dd"
             />
             {children}
+            {env.NODE_ENV === "development" ? <ScreenSize /> : null}
             <Toaster richColors duration={2700} />
           </ThemeProvider>
         </TRPCReactProvider>
