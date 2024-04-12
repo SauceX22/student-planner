@@ -86,7 +86,7 @@ const CalendarDay = ({
           //   "hover:bg-yellow-500 hover:outline hover:outline-2 hover:outline-yellow-600",
 
           // Other common styles
-          "mx-auto flex h-16 w-16 items-center justify-center rounded-lg text-lg transition-all duration-100"
+          "mx-auto flex h-16 w-16 items-center justify-center rounded-full text-lg transition-all duration-100"
         )}>
         <time dateTime={format(day, "yyyy-MM-dd")}>{format(day, "d")}</time>
       </button>
