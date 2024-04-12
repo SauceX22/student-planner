@@ -1,69 +1,40 @@
-import type {
-  CalendarDataState,
-  DisplayedMonthState,
-  ManipulatingEventState,
-  MonthEventsState,
-  SelectedDayState,
-  SelectedEventState,
-} from "@/lib/store/types";
-import { type EventType } from "@db/types";
-import { format, parse, startOfToday } from "date-fns";
+import { addMonths, startOfMonth, startOfToday, subMonths } from "date-fns";
 import { create } from "zustand";
 
-export const useMonthEvents = create<MonthEventsState>((set) => ({
-  monthEvents: [],
-  setMonthEvents: (newMonthEvents: EventType[]) =>
-    set((state) => ({ monthEvents: [...newMonthEvents] })),
-}));
+import { type EventType } from "@db/types";
+import type { CalendarSelection, SelectedEventState } from "@/lib/store/types";
 
-export const useManipulatingEvent = create<ManipulatingEventState>((set) => ({
-  creatingEvent: false,
-  editingEvent: false,
-  reschedulingEvent: false,
-  setCreatingEvent: (creatingEventNewValue: boolean) =>
-    set((state) => ({
-      creatingEvent: creatingEventNewValue,
-      editingEvent: false,
-      reschedulingEvent: false,
-    })),
-  setEditingEvent: (editingNewValue: boolean) =>
-    set((state) => ({
-      editingEvent: editingNewValue,
-      creatingEvent: false,
-      reschedulingEvent: false,
-    })),
-  setReschedulingEvent: (reschedulingNewValue: boolean) =>
-    set((state) => ({
-      reschedulingEvent: reschedulingNewValue,
-      creatingEvent: false,
-      editingEvent: false,
-    })),
-}));
-
-export const useSelectedDay = create<SelectedDayState>((set) => ({
-  selectedDay: startOfToday(),
-  setSelectedDay: (newSelectedDay: Date) =>
-    set((state) => ({ selectedDay: newSelectedDay })),
-}));
-
-export const useDisplayedMonth = create<DisplayedMonthState>((set) => ({
-  displayedMonth: startOfToday(),
-  setDisplayedMonth: (newDisplayedMonth: Date) =>
-    set((state) => ({ displayedMonth: newDisplayedMonth })),
-}));
+export const useCalendarSelection = create<CalendarSelection>(
+  /**
+   * This is the state of the calendar selection
+   *
+   * @param selectedDay - The currently selected day
+   * @param setSelectedDay - A function to set the selected day
+   * @param goToPreviousMonth - A function to go to the previous month
+   * @param goToNextMonth - A function to go to the next month
+   * @param goToToday - A function to go to the current day
+   */
+  (set) => ({
+    selectedDay: startOfToday(),
+    setSelectedDay: (newSelectedDay: Date) =>
+      set((state) => ({ selectedDay: newSelectedDay })),
+    goToPreviousMonth: () =>
+      set((state) => ({
+        selectedDay: startOfMonth(subMonths(state.selectedDay, 1)),
+      })),
+    goToNextMonth: () =>
+      set((state) => ({
+        selectedDay: startOfMonth(addMonths(state.selectedDay, 1)),
+      })),
+    goToToday: () =>
+      set((state) => ({
+        selectedDay: startOfToday(),
+      })),
+  })
+);
 
 export const useSelectedEvent = create<SelectedEventState>((set) => ({
   selectedEvent: null,
   setSelectedEvent: (newSelectedEvent: EventType | null) =>
     set((state) => ({ selectedEvent: newSelectedEvent })),
-}));
-
-export const useCalendarData = create<CalendarDataState>((set) => ({
-  firstDayDispCalendar: parse(
-    format(startOfToday(), "MMM-yyyy"),
-    "MMM-yyyy",
-    new Date(),
-  ),
-  setFirstDayDispCalendar: (newFirstDay: Date) =>
-    set((state) => ({ firstDayDispCalendar: newFirstDay })),
 }));
