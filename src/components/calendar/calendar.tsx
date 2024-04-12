@@ -33,28 +33,13 @@ import { useCalendarSelection } from "@/lib/store/event";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/client";
 
-const blockVariants = {
-  enter: (direction: number) => {
-    return {
-      x: direction > 0 ? 1000 : -1000,
-    };
-  },
-  center: {
-    zIndex: 1,
-    x: 0,
-  },
-  exit: (direction: number) => {
-    return {
-      zIndex: 0,
-      x: direction < 0 ? 1000 : -1000,
-    };
-  },
-};
+const HEADER_MOVE_DISTANCE = 80;
+const BLOCK_MOVE_DISTANCE = 300;
 
 const headerVariants = {
   enter: (direction: number) => {
     return {
-      x: direction > 0 ? 200 : -200,
+      x: direction > 0 ? HEADER_MOVE_DISTANCE : -HEADER_MOVE_DISTANCE,
       opacity: 0,
     };
   },
@@ -66,7 +51,28 @@ const headerVariants = {
   exit: (direction: number) => {
     return {
       zIndex: 0,
-      x: direction < 0 ? 200 : -200,
+      x: direction < 0 ? HEADER_MOVE_DISTANCE : -HEADER_MOVE_DISTANCE,
+      opacity: 0,
+    };
+  },
+};
+
+const blockVariants = {
+  enter: (direction: number) => {
+    return {
+      x: direction > 0 ? BLOCK_MOVE_DISTANCE : -BLOCK_MOVE_DISTANCE,
+      opacity: 0,
+    };
+  },
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => {
+    return {
+      zIndex: 0,
+      x: direction < 0 ? BLOCK_MOVE_DISTANCE : -BLOCK_MOVE_DISTANCE,
       opacity: 0,
     };
   },
@@ -116,45 +122,40 @@ export function Calendar() {
   return (
     <Card className="mb-auto w-fit select-none rounded-lg p-6 font-light shadow-xl">
       <CardHeader className="mb-4 grid grid-cols-1 p-0">
-        <div className="flex justify-center rounded-lg border border-neutral-800 p-6 shadow-sm">
+        <div className="flex justify-center overflow-hidden rounded-lg border border-neutral-800 p-6 shadow-sm">
           <div className="flex flex-auto flex-col items-start justify-center gap-2">
-            <div className="flex items-start justify-center">
-              <AnimatePresence initial={false} custom={direction} mode="wait">
-                <MotionCardTitle
-                  className="my-auto flex-auto items-center justify-center text-xl font-bold md:text-5xl"
-                  key={"title-month" + format(selectedDay, "MMM yyyy")}
-                  layout
-                  custom={direction}
-                  variants={headerVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{
-                    x: { type: "spring", stiffness: 300, damping: 30 },
-                    opacity: { duration: 0.2 },
-                  }}>
-                  {format(selectedDay, "MMM yyyy")}
-                </MotionCardTitle>
-              </AnimatePresence>
-            </div>
-            <div className="flex items-start justify-center">
-              <AnimatePresence initial={false} custom={direction}>
-                <MotionCardDescription
-                  key={"title-day" + format(selectedDay, "MMM d, yyyy")}
-                  layout
-                  custom={direction}
-                  variants={headerVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{
-                    x: { type: "spring", stiffness: 300, damping: 30 },
-                  }}>
-                  {/* mention the actual selected day */}
-                  {format(selectedDay, "MMM d, yyyy")}
-                </MotionCardDescription>
-              </AnimatePresence>
-            </div>
+            <AnimatePresence initial={false} custom={direction} mode="wait">
+              <MotionCardTitle
+                className="my-auto flex-auto items-center justify-center text-xl font-bold md:text-5xl"
+                key={format(selectedDay, "MMM yyyy")}
+                layout
+                custom={direction}
+                variants={headerVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { duration: 0.1, ease: "easeOut" },
+                  opacity: { duration: 0.08 },
+                }}>
+                {format(selectedDay, "MMM yyyy")}
+              </MotionCardTitle>
+              <MotionCardDescription
+                key={format(selectedDay, "MMM d, yyyy")}
+                layout
+                custom={direction}
+                variants={headerVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { duration: 0.1, ease: "easeOut" },
+                  opacity: { duration: 0.08 },
+                }}>
+                {/* mention the actual selected day */}
+                {format(selectedDay, "MMM d, yyyy")}
+              </MotionCardDescription>
+            </AnimatePresence>
           </div>
 
           <div className="flex items-center justify-center gap-2">
@@ -171,7 +172,6 @@ export function Calendar() {
               variant="outline"
               name="go-to-previous-month"
               className="h-fit w-fit rounded-full p-4"
-              // onClick={goToPreviousMonth}
               onClick={() => paginate(-1)}>
               <ChevronLeft className="h-6 w-6" />
             </Button>
@@ -180,7 +180,6 @@ export function Calendar() {
               variant="outline"
               name="go-to-next-month"
               className="h-fit w-fit rounded-full p-4"
-              // onClick={goToNextMonth}
               onClick={() => paginate(1)}>
               <ChevronRight className="h-6 w-6" />
             </Button>
@@ -204,20 +203,8 @@ export function Calendar() {
       {/* Calendar */}
       {/* === Days === */}
       <MotionCardContent
-        className="relative flex flex-row items-start justify-center overflow-hidden rounded-md border
-       border-orange-300 bg-orange-200 text-center text-lg font-semibold leading-8"
-        initial={{
-          // item dimension * n days + padding * 2
-          width: `${4.78 * 7 + 0.25 * 2}rem`,
-          height: `${5.78 * getWeeksInMonth(selectedDay) + 0.25 * 2}rem`,
-          padding: "0.25rem",
-        }}
-        animate={{
-          // item dimension * n days + padding * 2
-          width: `${4.78 * 7 + 0.25 * 2}rem`,
-          height: `${5.78 * getWeeksInMonth(selectedDay) + 0.25 * 2}rem`,
-          padding: "0.25rem",
-        }}
+        className="flex flex-row items-start justify-center overflow-hidden rounded-md border
+       border-orange-300 bg-orange-200 p-1 text-center text-lg font-semibold leading-8"
         transition={{
           duration: 0.1,
           type: "spring",
@@ -225,9 +212,9 @@ export function Calendar() {
           damping: 25,
         }}>
         {/* TODO: solve this by rendering the 2 adjacent month blocks and move each block in as needed */}
-        <AnimatePresence initial={false} custom={direction}>
+        <AnimatePresence initial={false} custom={direction} mode="wait">
           <motion.div
-            className="absolute grid grid-cols-7"
+            className="grid grid-cols-7"
             key={page}
             layout
             custom={direction}
@@ -236,7 +223,8 @@ export function Calendar() {
             animate="center"
             exit="exit"
             transition={{
-              x: { type: "spring", stiffness: 300, damping: 30 },
+              x: { type: "spring", duration: 0.25 },
+              opacity: { duration: 0.2 },
             }}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
